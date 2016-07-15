@@ -33,4 +33,7 @@ public class MainWindow extends JFrame {
         return label;
     }
 
+    public void showStatus(String status) {
+        sniperStatus.setText(status);
+    }
 }
