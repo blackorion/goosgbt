@@ -3,6 +3,8 @@ package sniper;
 import sniper.doubles.FakeAuctionServer;
 
 import static sniper.doubles.FakeAuctionServer.XMPP_HOSTNAME;
+import static sniper.ui.MainWindow.STATUS_JOINING;
+import static sniper.ui.MainWindow.STATUS_LOST;
 
 /**
  * @author Sergey Ivanov.
@@ -10,8 +12,6 @@ import static sniper.doubles.FakeAuctionServer.XMPP_HOSTNAME;
 public class ApplicationRunner {
     public static final String SNIPER_ID = "sniper";
     public static final String SNIPER_PASSWORD = "sniper";
-    private static final String STATUS_JOINING = "joining";
-    private static final String STATUS_LOST = "lost";
     private AuctionSniperDriver driver;
 
     public void startBiddingIn(FakeAuctionServer auction) {
@@ -20,19 +20,20 @@ public class ApplicationRunner {
     }
 
     private void runApplicationMain(final FakeAuctionServer auction) {
-        Thread thread = new Thread("Test Application") {
-            @Override
-            public void run() {
-                try {
-                    Main.main(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.getItemId());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        Thread thread = new Thread(mainAppRunnable(auction), "Test Application");
 
         thread.setDaemon(true);
         thread.start();
+    }
+
+    private Runnable mainAppRunnable(FakeAuctionServer auction) {
+        return () -> {
+            try {
+                Main.main(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.getItemId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
     }
 
     private void initDriver() {
