@@ -1,6 +1,7 @@
 package sniper;
 
 import sniper.doubles.FakeAuctionServer;
+import sniper.ui.MainWindow;
 
 import static sniper.doubles.FakeAuctionServer.XMPP_HOSTNAME;
 import static sniper.ui.MainWindow.STATUS_JOINING;
@@ -12,6 +13,7 @@ import static sniper.ui.MainWindow.STATUS_LOST;
 public class ApplicationRunner {
     public static final String SNIPER_ID = "sniper";
     public static final String SNIPER_PASSWORD = "sniper";
+    public static final String SNIPER_XMPP_ID = "sniper@localhost/Smack";
     private AuctionSniperDriver driver;
 
     public void startBiddingIn(FakeAuctionServer auction) {
@@ -48,5 +50,9 @@ public class ApplicationRunner {
     public void stop() {
         if (driver != null)
             driver.dispose();
+    }
+
+    public void hasShownSniperIsBidding() {
+        driver.showsSniperStatus(MainWindow.STATUS_BIDDING);
     }
 }
