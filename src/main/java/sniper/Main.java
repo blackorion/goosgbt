@@ -12,7 +12,7 @@ import java.awt.event.WindowEvent;
 /**
  * @author Sergey Ivanov.
  */
-public class Main implements SniperListener {
+public class Main {
     public static final int ARG_HOSTNAME = 0;
     public static final int ARG_USERNAME = 1;
     public static final int ARG_PASSWORD = 2;
@@ -45,7 +45,7 @@ public class Main implements SniperListener {
         this.notToBeGCd = chat;
 
         Auction auction = new XMPPAuction(chat);
-        chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, this)));
+        chat.addMessageListener(new AuctionMessageTranslator(connection.getUser(), new AuctionSniper(auction, new SniperStateDisplayer(ui))));
         auction.join();
     }
 
@@ -72,16 +72,6 @@ public class Main implements SniperListener {
 
     private void startUserInterface() throws Exception {
         SwingUtilities.invokeAndWait(() -> ui = new MainWindow());
-    }
-
-    @Override
-    public void sniperLost() {
-        SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
-    }
-
-    @Override
-    public void sniperBidding() {
-        SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_BIDDING));
     }
 
 }

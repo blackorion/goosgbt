@@ -30,8 +30,5 @@ sourceSets {
         java {
             srcDirs = ['src/test/func/java', 'src/test/unit/java']
         }
-        groovy {
-            srcDirs = ['src/test/unit/groovy']
-        }
     }
 }
