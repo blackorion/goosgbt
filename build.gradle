@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compile 'org.igniterealtime.smack:smack:3.2.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
 
     testCompile 'junit:junit:4.11'
     testCompile 'org.mockito:mockito-core:2.0.86-beta'

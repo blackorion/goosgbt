@@ -11,9 +11,10 @@ import static sniper.AuctionEventListener.PriceSource.FromSniper;
  */
 public class AuctionSniperTest {
 
+    private static final String ITEM_ID = "itemId";
     private Auction auction = mock(Auction.class);
     private SniperListener listener = mock(SniperListener.class);
-    private final AuctionSniper sniper = new AuctionSniper(auction, listener);
+    private final AuctionSniper sniper = new AuctionSniper(auction, listener, ITEM_ID);
 
     @Test
     public void reportsLostWhenAuctionClosesImmediately() {
@@ -34,17 +35,19 @@ public class AuctionSniperTest {
     public void bidsHigherAndReportsBiddingWhenNewPriceArrives() {
         final int price = 1001;
         final int increment = 25;
+        final int bid = price + increment;
 
         sniper.currentPrice(price, increment, FromOtherBidder);
 
-        verify(listener, atLeastOnce()).sniperBidding();
+        verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, price, bid, SniperState.BIDDING));
     }
 
     @Test
     public void reportsIsWinningWhenCurrentPriceComesFromSniper() {
+        sniper.currentPrice(100, 23, AuctionEventListener.PriceSource.FromOtherBidder);
         sniper.currentPrice(123, 45, AuctionEventListener.PriceSource.FromSniper);
 
-        verify(listener, atLeastOnce()).sniperWinning();
+        verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 123, 123, SniperState.WINNING));
     }
 
     @Test
