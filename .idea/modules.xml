@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/goosgbt.iml" filepath="$PROJECT_DIR$/.idea/modules/goosgbt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/goosgbt_main.iml" filepath="$PROJECT_DIR$/.idea/modules/goosgbt_main.iml" group="goosgbt" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/goosgbt_test.iml" filepath="$PROJECT_DIR$/.idea/modules/goosgbt_test.iml" group="goosgbt" />
     </modules>
   </component>
 </project>

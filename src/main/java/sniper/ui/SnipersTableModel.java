@@ -4,13 +4,16 @@ import sniper.SniperSnapshot;
 import sniper.SniperState;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SnipersTableModel extends AbstractTableModel {
     private SniperSnapshot snapshot = SniperSnapshot.joining("");
+    private List<SniperSnapshot> snipers = new ArrayList<>();
 
     @Override
     public int getRowCount() {
-        return 1;
+        return snipers.size();
     }
 
     @Override
@@ -42,6 +45,11 @@ public class SnipersTableModel extends AbstractTableModel {
         this.snapshot = snapshot;
 
         fireTableRowsUpdated(0, 0);
+    }
+
+    public void addSniper(SniperSnapshot snapshot) {
+        snipers.add(snapshot);
+        sniperStateChanged(snapshot);
     }
 
     public enum Column {

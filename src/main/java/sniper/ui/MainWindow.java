@@ -5,7 +5,6 @@ import sniper.SniperSnapshot;
 import sniper.SniperState;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**
@@ -17,13 +16,13 @@ public class MainWindow extends JFrame {
     public static final String STATUS_BIDDING = "bidding";
     public static final String STATUS_WINNING = "winning";
     public static final String STATUS_HAS_WON = "won";
-
-    private static final String SNIPER_STATUS_NAME = "sniper status";
     private static final String SNIPERS_TABLE_NAME = "Snipers";
-    private final SnipersTableModel snipers = new SnipersTableModel();
 
-    public MainWindow() {
+    private final SnipersTableModel snipers;
+
+    public MainWindow(SnipersTableModel snipers) {
         super("Auction Sniper");
+        this.snipers = snipers;
         setName(Main.MAIN_WINDOW_NAME);
         fillContentPane(makeSnipersTable());
         pack();

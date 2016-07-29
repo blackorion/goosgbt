@@ -10,6 +10,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -36,10 +37,10 @@ public class SnipersTableModelTest {
     public void setsSniperValuesInColumns() {
         model.sniperStateChanged(new SniperSnapshot("item id", 555, 666, SniperState.BIDDING));
 
-        assertColumnEquals(SnipersTableModel.Column.ITEM_IDENTIFIER, "item id");
-        assertColumnEquals(SnipersTableModel.Column.LAST_PRICE, 555);
-        assertColumnEquals(SnipersTableModel.Column.LAST_BID, 666);
-        assertColumnEquals(SnipersTableModel.Column.SNIPER_STATE, MainWindow.STATUS_BIDDING);
+        assertColumnEquals(0, SnipersTableModel.Column.ITEM_IDENTIFIER, "item id");
+        assertColumnEquals(0, SnipersTableModel.Column.LAST_PRICE, 555);
+        assertColumnEquals(0, SnipersTableModel.Column.LAST_BID, 666);
+        assertColumnEquals(0, SnipersTableModel.Column.SNIPER_STATE, MainWindow.STATUS_BIDDING);
     }
 
     @Test
@@ -51,8 +52,26 @@ public class SnipersTableModelTest {
         assertThat(captor.getValue(), samePropertyValuesAs(new TableModelEvent(model, 0)));
     }
 
-    private void assertColumnEquals(SnipersTableModel.Column column, Object expected) {
-        int rowIndex = 0;
+    @Test
+    public void notifiesListenersWhenAddingASniper() {
+        SniperSnapshot joining = SniperSnapshot.joining("item123");
+
+        assertThat(model.getRowCount(), is(0));
+
+        model.addSniper(joining);
+
+        assertThat(model.getRowCount(), is(1));
+        assertRowMatchesSnapshot(0, joining);
+    }
+
+    private void assertRowMatchesSnapshot(int rowIndex, SniperSnapshot snapshot) {
+        assertColumnEquals(rowIndex, SnipersTableModel.Column.ITEM_IDENTIFIER, snapshot.itemId);
+        assertColumnEquals(rowIndex, SnipersTableModel.Column.LAST_PRICE, snapshot.price);
+        assertColumnEquals(rowIndex, SnipersTableModel.Column.LAST_BID, snapshot.bid);
+        assertColumnEquals(rowIndex, SnipersTableModel.Column.SNIPER_STATE, snapshot.state.toString());
+    }
+
+    private void assertColumnEquals(int rowIndex, SnipersTableModel.Column column, Object expected) {
         int columnIndex = column.ordinal();
         assertEquals(expected, model.getValueAt(rowIndex, columnIndex));
     }

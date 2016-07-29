@@ -8,6 +8,7 @@ import org.jivesoftware.smack.packet.Message;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -25,6 +26,6 @@ public class SingleMessageListener implements MessageListener{
     public void receivesAMessage(Matcher<? super String> messageMatcher) throws InterruptedException {
         Message message = messages.poll(5, TimeUnit.SECONDS);
         assertThat("Message", message, is(notNullValue()));
-        assertThat(message.getBody(), messageMatcher);
+        assertThat(message, hasProperty("body", messageMatcher));
     }
 }
