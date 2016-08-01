@@ -64,7 +64,15 @@ public class SniperSnapshot {
         return new SniperSnapshot(itemId, price, bid, SniperState.WINNING);
     }
 
-    public SniperSnapshot newText(SniperState state) {
-        return new SniperSnapshot(itemId, price, bid, state);
+    public boolean isForSameItemAs(SniperSnapshot other) {
+        return itemId.equalsIgnoreCase(other.itemId);
+    }
+
+    public SniperSnapshot lost() {
+        return new SniperSnapshot(itemId, price, bid, SniperState.LOST);
+    }
+
+    public SniperSnapshot won() {
+        return new SniperSnapshot(itemId, price, bid, SniperState.WON);
     }
 }

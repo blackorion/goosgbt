@@ -1,6 +1,7 @@
 package sniper;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
 import static sniper.AuctionEventListener.PriceSource.FromOtherBidder;
@@ -20,7 +21,7 @@ public class AuctionSniperTest {
     public void reportsLostWhenAuctionClosesImmediately() {
         sniper.auctionClosed();
 
-        verify(listener).sniperLost();
+        verify(listener).sniperStateChanged(new SniperSnapshot(ITEM_ID, 0, 0, SniperState.LOST));
     }
 
     @Test
@@ -28,7 +29,7 @@ public class AuctionSniperTest {
         sniper.currentPrice(123, 45, FromOtherBidder);
         sniper.auctionClosed();
 
-        verify(listener, atLeastOnce()).sniperLost();
+        verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 123, 168, SniperState.LOST));
     }
 
     @Test
@@ -62,6 +63,6 @@ public class AuctionSniperTest {
         sniper.currentPrice(123, 4, FromSniper);
         sniper.auctionClosed();
 
-        verify(listener, atLeastOnce()).sniperWon();
+        verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 123, 0, SniperState.WON));
     }
 }

@@ -49,8 +49,10 @@ public class AuctionSniper implements AuctionEventListener {
     @Override
     public void auctionClosed() {
         if (lastPriceUpdateFrom == PriceSource.FromOtherBidder)
-            listener.sniperLost();
+            this.snapshot = snapshot.lost();
         else
-            listener.sniperWon();
+            this.snapshot = snapshot.won();
+
+        listener.sniperStateChanged(snapshot);
     }
 }

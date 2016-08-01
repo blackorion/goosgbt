@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SnipersTableModel extends AbstractTableModel {
-    private SniperSnapshot snapshot = SniperSnapshot.joining("");
     private List<SniperSnapshot> snipers = new ArrayList<>();
+
+    public void addSniper(SniperSnapshot snapshot) {
+        snipers.add(snapshot);
+    }
 
     @Override
     public int getRowCount() {
@@ -23,6 +26,8 @@ public class SnipersTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
+        SniperSnapshot snapshot = snipers.get(rowIndex);
+
         switch (Column.at(columnIndex)) {
             case ITEM_IDENTIFIER:
                 return snapshot.itemId;
@@ -37,19 +42,19 @@ public class SnipersTableModel extends AbstractTableModel {
         }
     }
 
-    public void setStatusText(SniperState state) {
-        sniperStateChanged(snapshot.newText(state));
-    }
-
     public void sniperStateChanged(SniperSnapshot snapshot) {
-        this.snapshot = snapshot;
-
+        int row = rowMatching(snapshot);
+        snipers.set(row, snapshot);
         fireTableRowsUpdated(0, 0);
     }
 
-    public void addSniper(SniperSnapshot snapshot) {
-        snipers.add(snapshot);
-        sniperStateChanged(snapshot);
+    private int rowMatching(SniperSnapshot snapshot) {
+        for (int i = 0; i < snipers.size(); i++) {
+            if(snapshot.isForSameItemAs(snipers.get(i)))
+                return i;
+        }
+
+        throw new IllegalArgumentException("Cannot find match for " + snapshot);
     }
 
     public enum Column {
