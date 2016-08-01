@@ -3,8 +3,6 @@ package sniper;
 import sniper.doubles.FakeAuctionServer;
 import sniper.ui.MainWindow;
 
-import java.util.stream.IntStream;
-
 import static sniper.doubles.FakeAuctionServer.XMPP_HOSTNAME;
 import static sniper.ui.MainWindow.STATUS_JOINING;
 import static sniper.ui.MainWindow.STATUS_LOST;
@@ -19,47 +17,41 @@ public class ApplicationRunner {
     private AuctionSniperDriver driver;
 
     public void startBiddingIn(FakeAuctionServer... auctions) {
-        runApplicationMain(auctions);
+        runApplicationMain();
         initDriver();
-        waitForSniperToJoin(auctions);
+        join(auctions);
     }
 
-    private void runApplicationMain(final FakeAuctionServer[] auction) {
-        Thread thread = new Thread(mainAppRunnable(auction), "Test Application");
+    private void runApplicationMain() {
+        Thread thread = new Thread(mainAppRunnable(), "Test Application");
 
         thread.setDaemon(true);
         thread.start();
     }
 
-    private Runnable mainAppRunnable(FakeAuctionServer[] auctions) {
+    private Runnable mainAppRunnable() {
         return () -> {
             try {
-                Main.main(arguments(auctions));
+                Main.main(arguments());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         };
     }
 
-    private String[] arguments(FakeAuctionServer[] auctions) {
-        final String[] arguments = new String[auctions.length + 3];
-        arguments[0] = XMPP_HOSTNAME;
-        arguments[1] = SNIPER_ID;
-        arguments[2] = SNIPER_PASSWORD;
-
-        for (int i = 0; i < auctions.length; i++)
-            arguments[i + 3] = auctions[i].getItemId();
-
-        return arguments;
+    private String[] arguments() {
+        return new String[]{XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD};
     }
 
     private void initDriver() {
         driver = new AuctionSniperDriver(1000);
     }
 
-    private void waitForSniperToJoin(FakeAuctionServer[] auctions) {
-        for (FakeAuctionServer auction : auctions)
+    private void join(FakeAuctionServer[] auctions) {
+        for (FakeAuctionServer auction : auctions) {
+            driver.startBiddingFor(auction.getItemId());
             driver.showsSniperStatus(auction.getItemId(), 0, 0, STATUS_JOINING);
+        }
     }
 
     public void stop() {

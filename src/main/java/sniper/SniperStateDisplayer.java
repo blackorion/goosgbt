@@ -1,18 +1,16 @@
 package sniper;
 
-import sniper.ui.MainWindow;
-
-import javax.swing.*;
+import sniper.ui.SnipersTableModel;
 
 public class SniperStateDisplayer implements SniperListener {
-    private final MainWindow ui;
+    private final SnipersTableModel ui;
 
-    public SniperStateDisplayer(MainWindow ui) {
+    public SniperStateDisplayer(SnipersTableModel ui) {
         this.ui = ui;
     }
 
     @Override
     public void sniperStateChanged(SniperSnapshot sniperSnapshot) {
-        SwingUtilities.invokeLater(()-> ui.sniperStatusChanged(sniperSnapshot));
+        ui.sniperStateChanged(sniperSnapshot);
     }
 }

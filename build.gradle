@@ -29,7 +29,7 @@ sourceSets {
     }
     test {
         java {
-            srcDirs = ['src/test/func/java', 'src/test/unit/java']
+            srcDirs = ['src/test/func/java', 'src/test/intg/java', 'src/test/unit/java']
         }
     }
 }

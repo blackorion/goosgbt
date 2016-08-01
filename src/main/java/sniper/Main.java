@@ -5,6 +5,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import sniper.ui.MainWindow;
 import sniper.ui.SnipersTableModel;
+import sniper.ui.UserRequestListener;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -36,9 +37,7 @@ public class Main {
         Main main = new Main();
         XMPPConnection connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
         main.disconnectWhenUiCloses(connection);
-
-        for (int auctionIndex = ARG_ITEM_ID; auctionIndex < args.length; auctionIndex++)
-            main.joinAuction(connection, args[auctionIndex]);
+        main.addUserRequestListenerFor(connection);
     }
 
     public Main() throws Exception {
@@ -50,17 +49,24 @@ public class Main {
     }
 
     private void joinAuction(XMPPConnection connection, String itemId) throws Exception {
-        safelyAddItemToModel(itemId);
         final Chat chat = connection.getChatManager().createChat(auctionId(itemId, connection), null);
         this.notToBeGCd = chat;
 
         Auction auction = new XMPPAuction(chat);
-        chat.addMessageListener(new AuctionMessageTranslator(connection.getUser(), new AuctionSniper(auction, new SniperStateDisplayer(ui), itemId)));
+        chat.addMessageListener(new AuctionMessageTranslator(connection.getUser(), new AuctionSniper(auction, new SniperStateDisplayer(snipers), itemId)));
         auction.join();
     }
 
-    private void safelyAddItemToModel(String itemId) throws Exception {
-        SwingUtilities.invokeAndWait(() -> snipers.addSniper(SniperSnapshot.joining(itemId)));
+    private void addUserRequestListenerFor(XMPPConnection connection) {
+        ui.addUserRequestListener(itemId -> {
+            snipers.addSniper(SniperSnapshot.joining(itemId));
+
+            try {
+                Main.this.joinAuction(connection, itemId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void disconnectWhenUiCloses(XMPPConnection connection) {
