@@ -11,7 +11,7 @@ public class SniperLauncher implements UserRequestListener {
     private final AuctionHouse auctionHouse;
     private final SniperCollector collector;
 
-    public SniperLauncher(AuctionHouse auctionHouse, SnipersTableModel collector) {
+    public SniperLauncher(AuctionHouse auctionHouse, SniperCollector collector) {
         this.auctionHouse = auctionHouse;
         this.collector = collector;
     }

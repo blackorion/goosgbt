@@ -37,7 +37,7 @@ public class SnipersTableModelTest {
         AuctionSniper sniper = createFakeSniper("item id");
         SniperSnapshot bidding = sniper.getSnapshot().bidding(555, 6666);
 
-        model.addSniper(sniper);
+        model.sniperAdded(sniper);
         model.sniperStateChanged(bidding);
 
         assertRowMatchesSnapshot(0, bidding);
@@ -48,7 +48,7 @@ public class SnipersTableModelTest {
         AuctionSniper sniper = createFakeSniper("item id");
         SniperSnapshot bidding = sniper.getSnapshot().bidding(555, 666);
 
-        model.addSniper(sniper);
+        model.sniperAdded(sniper);
         model.sniperStateChanged(bidding);
 
         final ArgumentCaptor<TableModelEvent> captor = ArgumentCaptor.forClass(TableModelEvent.class);
@@ -62,7 +62,7 @@ public class SnipersTableModelTest {
 
         assertThat(model.getRowCount(), is(0));
 
-        model.addSniper(sniper);
+        model.sniperAdded(sniper);
 
         assertThat(model.getRowCount(), is(1));
         assertRowMatchesSnapshot(0, sniper.getSnapshot());
@@ -73,8 +73,8 @@ public class SnipersTableModelTest {
         AuctionSniper sniper = createFakeSniper("item 0");
         AuctionSniper sniper2 = createFakeSniper("item 1");
 
-        model.addSniper(sniper);
-        model.addSniper(sniper2);
+        model.sniperAdded(sniper);
+        model.sniperAdded(sniper2);
 
         assertEquals("item 0", cellValue(0, SnipersTableModel.Column.ITEM_IDENTIFIER));
         assertEquals("item 1", cellValue(1, SnipersTableModel.Column.ITEM_IDENTIFIER));
@@ -86,8 +86,8 @@ public class SnipersTableModelTest {
         AuctionSniper sniper2 = createFakeSniper("item 1");
 
         SniperSnapshot bidding2 = sniper2.getSnapshot().bidding(1000, 12);
-        model.addSniper(sniper);
-        model.addSniper(sniper2);
+        model.sniperAdded(sniper);
+        model.sniperAdded(sniper2);
 
         model.sniperStateChanged(bidding2);
 

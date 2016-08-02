@@ -5,7 +5,6 @@ import sniper.AuctionSniper;
 /**
  * @author Sergey Ivanov.
  */
-interface SniperCollector {
-
+public interface SniperCollector {
     void addSniper(AuctionSniper sniper);
 }

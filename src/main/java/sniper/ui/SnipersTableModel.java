@@ -1,15 +1,12 @@
 package sniper.ui;
 
-import sniper.AuctionSniper;
-import sniper.SniperListener;
-import sniper.SniperSnapshot;
-import sniper.SwingThreadSniperListener;
+import sniper.*;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SnipersTableModel extends AbstractTableModel implements SniperListener, SniperCollector {
+public class SnipersTableModel extends AbstractTableModel implements SniperListener, PortfolioListener {
     public static final String STATUS_JOINING = "joining";
     public static final String STATUS_LOST = "lost";
     public static final String STATUS_BIDDING = "bidding";
@@ -63,17 +60,17 @@ public class SnipersTableModel extends AbstractTableModel implements SniperListe
         throw new IllegalArgumentException("Cannot find match for " + snapshot);
     }
 
-    @Override
-    public void addSniper(AuctionSniper sniper) {
-        snipers.add(sniper);
-        addSniperSnapshot(sniper.getSnapshot());
-        sniper.addSniperListener(new SwingThreadSniperListener(this));
-    }
-
     private void addSniperSnapshot(SniperSnapshot snapshot) {
         snapshots.add(snapshot);
         int row = snapshots.size() - 1;
         fireTableRowsInserted(row, row);
+    }
+
+    @Override
+    public void sniperAdded(AuctionSniper sniper) {
+        snipers.add(sniper);
+        addSniperSnapshot(sniper.getSnapshot());
+        sniper.addSniperListener(new SwingThreadSniperListener(this));
     }
 
     public enum Column {
