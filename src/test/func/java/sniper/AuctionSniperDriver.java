@@ -37,20 +37,23 @@ public class AuctionSniperDriver extends JFrameDriver {
                 withLabelText(valueOf(lastBid)), withLabelText(statusText));
     }
 
-    public void startBiddingFor(String itemId) {
-        itemIdField().clearText();
-        itemIdField().selectAll();
-        itemIdField().replaceAllText("a");
-        itemIdField().deleteSelectedText();
-        itemIdField().replaceAllText(itemId);
+    public void startBiddingFor(String itemId, int stopPrice) {
+        updateTextFieldValue(MainWindow.NEW_ITEM_ID_NAME, itemId);
+        updateTextFieldValue(MainWindow.NEW_ITEM_STOP_PRICE_NAME, String.valueOf(stopPrice));
         bidButton().click();
+    }
+
+    private void updateTextFieldValue(String fieldName, String itemId) {
+        textField(fieldName).leftClickOnComponent();
+        textField(fieldName).leftClickOnComponent();
+        textField(fieldName).replaceAllText(itemId);
     }
 
     private JButtonDriver bidButton() {
         return new JButtonDriver(this, JButton.class, named(MainWindow.JOIN_BUTTON_NAME));
     }
 
-    private JTextFieldDriver itemIdField() {
-        return new JTextFieldDriver(this, JTextField.class, named(MainWindow.NEW_ITEM_ID_NAME));
+    private JTextFieldDriver textField(String fieldName) {
+        return new JTextFieldDriver(this, JTextField.class, named(fieldName));
     }
 }

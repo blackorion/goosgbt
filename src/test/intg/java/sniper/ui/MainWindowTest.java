@@ -3,6 +3,7 @@ package sniper.ui;
 import com.objogate.wl.swing.probe.ValueMatcherProbe;
 import org.junit.Test;
 import sniper.AuctionSniperDriver;
+import sniper.Item;
 import sniper.SniperPortfolio;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -17,10 +18,10 @@ public class MainWindowTest {
 
     @Test
     public void makesUserRequestWhenJointButtonClicked() {
-        ValueMatcherProbe<String> buttonProbe = new ValueMatcherProbe<>(equalTo("my item-id"), "join request");
+        ValueMatcherProbe<Item> buttonProbe = new ValueMatcherProbe<>(equalTo(new Item("my item-id", 789)), "join request");
         mainWindow.addUserRequestListener(buttonProbe::setReceivedValue);
 
-        driver.startBiddingFor("my item-id");
+        driver.startBiddingFor("my item-id", 789);
 
         driver.check(buttonProbe);
     }

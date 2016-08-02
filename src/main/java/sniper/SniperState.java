@@ -6,6 +6,7 @@ public enum SniperState {
     JOINING(SnipersTableModel.STATUS_JOINING),
     BIDDING(SnipersTableModel.STATUS_BIDDING),
     WINNING(SnipersTableModel.STATUS_WINNING),
+    LOSING(SnipersTableModel.STATUS_LOSING),
     LOST(SnipersTableModel.STATUS_LOST),
     WON(SnipersTableModel.STATUS_HAS_WON);
 

@@ -1,10 +1,12 @@
 package sniper.ui;
 
 import sniper.Announcer;
+import sniper.Item;
 import sniper.SniperPortfolio;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.NumberFormat;
 import java.util.Arrays;
 
 /**
@@ -13,6 +15,7 @@ import java.util.Arrays;
 public class MainWindow extends JFrame {
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     public static final String NEW_ITEM_ID_NAME = "item id";
+    public static final String NEW_ITEM_STOP_PRICE_NAME = "stop price";
     public static final String JOIN_BUTTON_NAME = "join";
     public static final String SNIPERS_TABLE_NAME = "Snipers";
     private final Announcer<UserRequestListener> userRequests = Announcer.to(UserRequestListener.class);
@@ -49,9 +52,14 @@ public class MainWindow extends JFrame {
         itemIdField.setName(NEW_ITEM_ID_NAME);
         controls.add(itemIdField);
 
+        JFormattedTextField stopPriceField = new JFormattedTextField(NumberFormat.getIntegerInstance());
+        stopPriceField.setColumns(25);
+        stopPriceField.setName(NEW_ITEM_STOP_PRICE_NAME);
+        controls.add(stopPriceField);
+
         JButton joinAuctionButton = new JButton("Join Auction");
         joinAuctionButton.setName(JOIN_BUTTON_NAME);
-        joinAuctionButton.addActionListener(ev -> userRequests.announce().joinAuction(itemIdField.getText()));
+        joinAuctionButton.addActionListener(ev -> userRequests.announce().joinAuction(new Item(itemIdField.getText(), Integer.valueOf(stopPriceField.getText()))));
         controls.add(joinAuctionButton);
 
         return controls;

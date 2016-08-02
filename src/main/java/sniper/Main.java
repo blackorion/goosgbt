@@ -1,18 +1,12 @@
 package sniper;
 
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import sniper.ui.MainWindow;
 import sniper.ui.SniperLauncher;
-import sniper.ui.SnipersTableModel;
-import sniper.xmpp.XMPPAuction;
 import sniper.xmpp.XMPPAuctionHouse;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Sergey Ivanov.
@@ -33,7 +27,7 @@ public class Main {
         main.addUserRequestListenerFor(auctionHouse);
     }
 
-    private void disconnectWhenUiCloses(XMPPAuctionHouse auctionHouse) {
+    private void disconnectWhenUiCloses(final XMPPAuctionHouse auctionHouse) {
         ui.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {

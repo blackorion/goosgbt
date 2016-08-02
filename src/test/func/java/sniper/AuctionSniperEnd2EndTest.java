@@ -1,5 +1,6 @@
 package sniper;
 
+import org.jivesoftware.smack.XMPPException;
 import org.junit.After;
 import org.junit.Test;
 import sniper.doubles.FakeAuctionServer;
@@ -82,6 +83,26 @@ public class AuctionSniperEnd2EndTest {
 
         application.showsSniperHasWonAuction(auction, 1098);
         application.showsSniperHasWonAuction(auction2, 521);
+    }
+
+    @Test
+    public void sniperLosesAnAuctionWhenThePriceIsTooHigh() throws Exception {
+        auction.startSellingItem();
+        application.startBiddingWithStopPrice(auction, 1100);
+        auction.hasReceivedJoinRequestFrom(ApplicationRunner.SNIPER_XMPP_ID);
+        auction.reportPrice(1000, 98, "other bidder");
+        application.hasShownSniperIsBidding(auction, 1000, 1098);
+
+        auction.hasReceivedBid(1098, ApplicationRunner.SNIPER_XMPP_ID);
+
+        auction.reportPrice(1197, 10, "third party");
+        application.hasShownSniperIsLosing(auction, 1197, 1098);
+
+        auction.reportPrice(1207, 10, "fourth party");
+        application.hasShownSniperIsLosing(auction, 1207, 1098);
+
+        auction.announceClosed();
+        application.showsSniperHasLostAuction(auction, 1207, 1098);
     }
 
     @After

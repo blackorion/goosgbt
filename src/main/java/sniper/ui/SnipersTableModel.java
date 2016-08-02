@@ -12,6 +12,7 @@ public class SnipersTableModel extends AbstractTableModel implements SniperListe
     public static final String STATUS_BIDDING = "bidding";
     public static final String STATUS_WINNING = "winning";
     public static final String STATUS_HAS_WON = "won";
+    public static final String STATUS_LOSING = "losing";
 
     private List<SniperSnapshot> snapshots = new ArrayList<>();
     private final List<AuctionSniper> snipers = new ArrayList<>();
