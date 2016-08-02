@@ -8,15 +8,17 @@ import java.util.function.BiConsumer;
  * @author Sergey Ivanov.
  */
 public class AuctionSniper implements AuctionEventListener {
+    private final Item item;
     private Auction auction;
     private PriceSource lastPriceUpdateFrom = PriceSource.FromOtherBidder;
     private final Map<PriceSource, BiConsumer<Integer, Integer>> priceUpdateStrategies = createPriceUpdateStrategies();
     private SniperSnapshot snapshot;
     private Announcer<SniperListener> listeners = new Announcer<>(SniperListener.class);
 
-    public AuctionSniper(String itemId, Auction auction) {
+    public AuctionSniper(Item item, Auction auction) {
+        this.item = item;
         this.auction = auction;
-        this.snapshot = SniperSnapshot.joining(itemId);
+        this.snapshot = SniperSnapshot.joining(item.identifier);
     }
 
     private Map<PriceSource, BiConsumer<Integer, Integer>> createPriceUpdateStrategies() {
@@ -44,8 +46,12 @@ public class AuctionSniper implements AuctionEventListener {
 
     private void priceUpdateFromOtherBidder(Integer price, Integer increment) {
         final int bid = price + increment;
-        auction.bid(bid);
-        snapshot = snapshot.bidding(price, bid);
+
+        if (item.allowsBid(bid)) {
+            auction.bid(bid);
+            snapshot = snapshot.bidding(price, bid);
+        } else
+            snapshot = snapshot.losing(price);
     }
 
     @Override

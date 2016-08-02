@@ -75,4 +75,8 @@ public class SniperSnapshot {
     public SniperSnapshot won() {
         return new SniperSnapshot(itemId, price, bid, SniperState.WON);
     }
+
+    public SniperSnapshot losing(Integer price) {
+        return new SniperSnapshot(itemId, price, bid, SniperState.LOSING);
+    }
 }

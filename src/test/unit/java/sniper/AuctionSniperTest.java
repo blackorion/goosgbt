@@ -15,7 +15,7 @@ public class AuctionSniperTest {
     private static final String ITEM_ID = "itemId";
     private Auction auction = mock(Auction.class);
     private SniperListener listener = mock(SniperListener.class);
-    private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction);
+    private final AuctionSniper sniper = new AuctionSniper(new Item(ITEM_ID, 1234), auction);
 
     @Before
     public void setUp() throws Exception {
@@ -78,6 +78,5 @@ public class AuctionSniperTest {
 
         int bid = 123 + 45;
         verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 2345, bid, SniperState.LOSING));
-        verify(listener, atMost(1)).sniperStateChanged(new SniperSnapshot(ITEM_ID, any(), any(), SniperState.BIDDING));
     }
 }
