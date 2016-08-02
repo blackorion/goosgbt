@@ -1,13 +1,13 @@
 package sniper;
 
-import sniper.ui.MainWindow;
+import sniper.ui.SnipersTableModel;
 
 public enum SniperState {
-    JOINING(MainWindow.STATUS_JOINING),
-    BIDDING(MainWindow.STATUS_BIDDING),
-    WINNING(MainWindow.STATUS_WINNING),
-    LOST(MainWindow.STATUS_LOST),
-    WON(MainWindow.STATUS_HAS_WON);
+    JOINING(SnipersTableModel.STATUS_JOINING),
+    BIDDING(SnipersTableModel.STATUS_BIDDING),
+    WINNING(SnipersTableModel.STATUS_WINNING),
+    LOST(SnipersTableModel.STATUS_LOST),
+    WON(SnipersTableModel.STATUS_HAS_WON);
 
     private final String statusName;
 

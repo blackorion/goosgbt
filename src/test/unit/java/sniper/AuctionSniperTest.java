@@ -1,7 +1,7 @@
 package sniper;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
 import static sniper.AuctionEventListener.PriceSource.FromOtherBidder;
@@ -15,7 +15,12 @@ public class AuctionSniperTest {
     private static final String ITEM_ID = "itemId";
     private Auction auction = mock(Auction.class);
     private SniperListener listener = mock(SniperListener.class);
-    private final AuctionSniper sniper = new AuctionSniper(auction, listener, ITEM_ID);
+    private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction);
+
+    @Before
+    public void setUp() throws Exception {
+        sniper.addSniperListener(listener);
+    }
 
     @Test
     public void reportsLostWhenAuctionClosesImmediately() {

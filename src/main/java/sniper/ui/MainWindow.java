@@ -1,23 +1,16 @@
 package sniper.ui;
 
 import sniper.Announcer;
-import sniper.Main;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 /**
  * @author Sergey Ivanov.
  */
 public class MainWindow extends JFrame {
-    public static final String STATUS_JOINING = "joining";
-    public static final String STATUS_LOST = "lost";
-    public static final String STATUS_BIDDING = "bidding";
-    public static final String STATUS_WINNING = "winning";
-    public static final String STATUS_HAS_WON = "won";
+    public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     public static final String NEW_ITEM_ID_NAME = "item id";
     public static final String JOIN_BUTTON_NAME = "join";
     public static final String SNIPERS_TABLE_NAME = "Snipers";
@@ -25,7 +18,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(SnipersTableModel snipers) {
         super("Auction Sniper");
-        setName(Main.MAIN_WINDOW_NAME);
+        setName(MAIN_WINDOW_NAME);
         fillContentPane(makeSnipersTable(snipers), makeControls());
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

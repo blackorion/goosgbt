@@ -1,22 +1,27 @@
 package sniper.ui;
 
+import sniper.AuctionSniper;
+import sniper.SniperListener;
 import sniper.SniperSnapshot;
-import sniper.SniperState;
+import sniper.SwingThreadSniperListener;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SnipersTableModel extends AbstractTableModel {
-    private List<SniperSnapshot> snipers = new ArrayList<>();
+public class SnipersTableModel extends AbstractTableModel implements SniperListener, SniperCollector {
+    public static final String STATUS_JOINING = "joining";
+    public static final String STATUS_LOST = "lost";
+    public static final String STATUS_BIDDING = "bidding";
+    public static final String STATUS_WINNING = "winning";
+    public static final String STATUS_HAS_WON = "won";
 
-    public void addSniper(SniperSnapshot snapshot) {
-        snipers.add(snapshot);
-    }
+    private List<SniperSnapshot> snapshots = new ArrayList<>();
+    private final List<AuctionSniper> snipers = new ArrayList<>();
 
     @Override
     public int getRowCount() {
-        return snipers.size();
+        return snapshots.size();
     }
 
     @Override
@@ -26,7 +31,7 @@ public class SnipersTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        SniperSnapshot snapshot = snipers.get(rowIndex);
+        SniperSnapshot snapshot = snapshots.get(rowIndex);
 
         switch (Column.at(columnIndex)) {
             case ITEM_IDENTIFIER:
@@ -42,19 +47,33 @@ public class SnipersTableModel extends AbstractTableModel {
         }
     }
 
+    @Override
     public void sniperStateChanged(SniperSnapshot snapshot) {
         int row = rowMatching(snapshot);
-        snipers.set(row, snapshot);
+        snapshots.set(row, snapshot);
         fireTableRowsUpdated(0, 0);
     }
 
     private int rowMatching(SniperSnapshot snapshot) {
-        for (int i = 0; i < snipers.size(); i++) {
-            if(snapshot.isForSameItemAs(snipers.get(i)))
+        for (int i = 0; i < snapshots.size(); i++) {
+            if (snapshot.isForSameItemAs(snapshots.get(i)))
                 return i;
         }
 
         throw new IllegalArgumentException("Cannot find match for " + snapshot);
+    }
+
+    @Override
+    public void addSniper(AuctionSniper sniper) {
+        snipers.add(sniper);
+        addSniperSnapshot(sniper.getSnapshot());
+        sniper.addSniperListener(new SwingThreadSniperListener(this));
+    }
+
+    private void addSniperSnapshot(SniperSnapshot snapshot) {
+        snapshots.add(snapshot);
+        int row = snapshots.size() - 1;
+        fireTableRowsInserted(row, row);
     }
 
     public enum Column {

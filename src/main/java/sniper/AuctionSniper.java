@@ -9,10 +9,15 @@ import java.util.function.BiConsumer;
  */
 public class AuctionSniper implements AuctionEventListener {
     private Auction auction;
-    private SniperListener listener;
     private PriceSource lastPriceUpdateFrom = PriceSource.FromOtherBidder;
     private final Map<PriceSource, BiConsumer<Integer, Integer>> priceUpdateStrategies = createPriceUpdateStrategies();
     private SniperSnapshot snapshot;
+    private Announcer<SniperListener> listeners = new Announcer<>(SniperListener.class);
+
+    public AuctionSniper(String itemId, Auction auction) {
+        this.auction = auction;
+        this.snapshot = SniperSnapshot.joining(itemId);
+    }
 
     private Map<PriceSource, BiConsumer<Integer, Integer>> createPriceUpdateStrategies() {
         final Map<PriceSource, BiConsumer<Integer, Integer>> strategies = new HashMap<>();
@@ -22,18 +27,15 @@ public class AuctionSniper implements AuctionEventListener {
         return strategies;
     }
 
-    public AuctionSniper(Auction auction, SniperListener listener, String itemId) {
-        this.auction = auction;
-        this.listener = listener;
-        this.snapshot = SniperSnapshot.joining(itemId);
-        listener.sniperStateChanged(snapshot);
+    public SniperSnapshot getSnapshot() {
+        return snapshot;
     }
 
     @Override
     public void currentPrice(int price, int increment, PriceSource from) {
         lastPriceUpdateFrom = from;
         priceUpdateStrategies.get(from).accept(price, increment);
-        listener.sniperStateChanged(snapshot);
+        listeners.announce().sniperStateChanged(snapshot);
     }
 
     private void priceUpdateFromSniper(Integer price, Integer increment) {
@@ -53,6 +55,10 @@ public class AuctionSniper implements AuctionEventListener {
         else
             this.snapshot = snapshot.won();
 
-        listener.sniperStateChanged(snapshot);
+        listeners.announce().sniperStateChanged(snapshot);
+    }
+
+    public void addSniperListener(SniperListener listener) {
+        this.listeners.addListener(listener);
     }
 }

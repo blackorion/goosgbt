@@ -1,8 +1,10 @@
-package sniper;
+package sniper.xmpp;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
+import sniper.AuctionEvent;
+import sniper.AuctionEventListener;
 
 import static sniper.AuctionEventListener.PriceSource.FromOtherBidder;
 import static sniper.AuctionEventListener.PriceSource.FromSniper;

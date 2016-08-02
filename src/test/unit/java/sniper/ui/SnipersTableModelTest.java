@@ -3,16 +3,15 @@ package sniper.ui;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import sniper.AuctionSniper;
 import sniper.SniperSnapshot;
-import sniper.SniperState;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -34,55 +33,59 @@ public class SnipersTableModelTest {
     }
 
     @Test
-    public void setsSniperValuesInColumns() {
-        SniperSnapshot joining = SniperSnapshot.joining("item id");
-        SniperSnapshot bidding = joining.bidding(555, 6666);
+    public void setsSniperValuesInColumns() throws Exception {
+        AuctionSniper sniper = createFakeSniper("item id");
+        SniperSnapshot bidding = sniper.getSnapshot().bidding(555, 6666);
 
-        model.addSniper(joining);
+        model.addSniper(sniper);
         model.sniperStateChanged(bidding);
 
         assertRowMatchesSnapshot(0, bidding);
     }
 
     @Test
-    public void firesStateToTable() {
-        SniperSnapshot joining = SniperSnapshot.joining("item id");
-        SniperSnapshot bidding = joining.bidding(555, 666);
+    public void firesStateToTable() throws Exception {
+        AuctionSniper sniper = createFakeSniper("item id");
+        SniperSnapshot bidding = sniper.getSnapshot().bidding(555, 666);
 
-        model.addSniper(joining);
+        model.addSniper(sniper);
         model.sniperStateChanged(bidding);
 
         final ArgumentCaptor<TableModelEvent> captor = ArgumentCaptor.forClass(TableModelEvent.class);
-        verify(listener).tableChanged(captor.capture());
+        verify(listener, atLeastOnce()).tableChanged(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(new TableModelEvent(model, 0)));
     }
 
     @Test
-    public void notifiesListenersWhenAddingASniper() {
-        SniperSnapshot joining = SniperSnapshot.joining("item123");
+    public void notifiesListenersWhenAddingASniper() throws Exception {
+        AuctionSniper sniper = createFakeSniper("item123");
 
         assertThat(model.getRowCount(), is(0));
 
-        model.addSniper(joining);
+        model.addSniper(sniper);
 
         assertThat(model.getRowCount(), is(1));
-        assertRowMatchesSnapshot(0, joining);
+        assertRowMatchesSnapshot(0, sniper.getSnapshot());
     }
 
     @Test
-    public void holdsSnipersInAdditionOrder() {
-        model.addSniper(SniperSnapshot.joining("item 0"));
-        model.addSniper(SniperSnapshot.joining("item 1"));
+    public void holdsSnipersInAdditionOrder() throws Exception {
+        AuctionSniper sniper = createFakeSniper("item 0");
+        AuctionSniper sniper2 = createFakeSniper("item 1");
+
+        model.addSniper(sniper);
+        model.addSniper(sniper2);
 
         assertEquals("item 0", cellValue(0, SnipersTableModel.Column.ITEM_IDENTIFIER));
         assertEquals("item 1", cellValue(1, SnipersTableModel.Column.ITEM_IDENTIFIER));
     }
 
     @Test
-    public void updatesCorrectRowForSniper() {
-        SniperSnapshot sniper = SniperSnapshot.joining("item 0");
-        SniperSnapshot sniper2 = SniperSnapshot.joining("item 1");
-        SniperSnapshot bidding2 = sniper2.bidding(1000, 12);
+    public void updatesCorrectRowForSniper() throws Exception {
+        AuctionSniper sniper = createFakeSniper("item 0");
+        AuctionSniper sniper2 = createFakeSniper("item 1");
+
+        SniperSnapshot bidding2 = sniper2.getSnapshot().bidding(1000, 12);
         model.addSniper(sniper);
         model.addSniper(sniper2);
 
@@ -109,6 +112,13 @@ public class SnipersTableModelTest {
 
     private Object cellValue(int rowIndex, SnipersTableModel.Column column) {
         return model.getValueAt(rowIndex, column.ordinal());
+    }
+
+    private AuctionSniper createFakeSniper(String itemId) throws Exception {
+        AuctionSniper sniper = mock(AuctionSniper.class);
+        when(sniper.getSnapshot()).thenReturn(SniperSnapshot.joining(itemId));
+
+        return sniper;
     }
 
 }

@@ -1,11 +1,11 @@
 package sniper;
 
 import sniper.doubles.FakeAuctionServer;
-import sniper.ui.MainWindow;
+import sniper.ui.SnipersTableModel;
 
 import static sniper.doubles.FakeAuctionServer.XMPP_HOSTNAME;
-import static sniper.ui.MainWindow.STATUS_JOINING;
-import static sniper.ui.MainWindow.STATUS_LOST;
+import static sniper.ui.SnipersTableModel.STATUS_JOINING;
+import static sniper.ui.SnipersTableModel.STATUS_LOST;
 
 /**
  * @author Sergey Ivanov.
@@ -60,7 +60,7 @@ public class ApplicationRunner {
     }
 
     public void hasShownSniperIsBidding(FakeAuctionServer auction, int lastPrice, int lastBid) {
-        driver.showsSniperStatus(auction.getItemId(), lastPrice, lastBid, MainWindow.STATUS_BIDDING);
+        driver.showsSniperStatus(auction.getItemId(), lastPrice, lastBid, SnipersTableModel.STATUS_BIDDING);
     }
 
     public void showsSniperHasLostAuction(FakeAuctionServer auction, int price, int bid) {
@@ -68,10 +68,10 @@ public class ApplicationRunner {
     }
 
     public void hasShownSniperIsWinning(FakeAuctionServer auction, int winningBid) {
-        driver.showsSniperStatus(auction.getItemId(), winningBid, winningBid, MainWindow.STATUS_WINNING);
+        driver.showsSniperStatus(auction.getItemId(), winningBid, winningBid, SnipersTableModel.STATUS_WINNING);
     }
 
     public void showsSniperHasWonAuction(FakeAuctionServer auction, int lastPrice) {
-        driver.showsSniperStatus(auction.getItemId(), lastPrice, lastPrice, MainWindow.STATUS_HAS_WON);
+        driver.showsSniperStatus(auction.getItemId(), lastPrice, lastPrice, SnipersTableModel.STATUS_HAS_WON);
     }
 }
