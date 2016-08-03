@@ -79,4 +79,32 @@ public class AuctionSniperTest {
         int bid = 123 + 45;
         verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 2345, bid, SniperState.LOSING));
     }
+
+    @Test
+    public void doesNotBidAndReportsLosingIfFirstPriceIsAboveStopPrice() throws Exception {
+        sniper.currentPrice(345, 1000, FromOtherBidder);
+
+        verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 345, 0, SniperState.LOSING));
+    }
+
+    @Test
+    public void reportsLostIfAuctionClosesWhenLosing() throws Exception {
+        sniper.currentPrice(345, 1000, FromOtherBidder);
+        sniper.auctionClosed();
+
+        verify(listener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 345, 0, SniperState.LOST));
+    }
+
+    @Test
+    public void doesNotBidWhenPriceIsAboveStopPrice() throws Exception {
+        sniper.currentPrice(678, 9999, FromOtherBidder);
+
+        verify(listener, never()).sniperStateChanged(hasSniperState(SniperState.BIDDING));
+        verify(auction, never()).bid(anyInt());
+    }
+
+    private SniperSnapshot hasSniperState(final SniperState state) {
+        return argThat(argument -> state.equals(argument.state));
+    }
+
 }
